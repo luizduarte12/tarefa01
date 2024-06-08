@@ -33,9 +33,9 @@ public class DisciplinaDao implements IDao<Disciplina> {
     }
 
     @Override
-    public List get() {
+    public List<Disciplina> get() {
         List<Disciplina> registros = new ArrayList<>();
-        String sql = "SELECT * FROM aluno";
+        String sql = "SELECT * FROM disciplina";
         try {
             ps = conexao.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -48,31 +48,75 @@ public class DisciplinaDao implements IDao<Disciplina> {
         } catch (SQLException e) {
                 e.printStackTrace();
         }
-            return registros;
+        return registros;
     }
 
     @Override
-    public Disciplina get(int idade) {
-        // TODO Auto-generated method stub
-        return null;
+    public Disciplina get(int id) {
+        Disciplina registro = null;
+        String sql = "SELECT * FROM disciplina WHERE id = ?";
+        try {
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                registro = new Disciplina();
+                registro.setNomeDisciplina(rs.getString("nomeDisciplina"));
+                registro.setCargaHoraria(rs.getString("cargaHoraria"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registro;
     }
 
     @Override
-    public List get(String termoBusca) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Disciplina> get(String termoBusca) {
+        List<Disciplina> registros = new ArrayList<>();
+        String sql = "SELECT * FROM disciplina WHERE nomeDisciplina LIKE ?";
+        try {
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, "%" + termoBusca + "%");
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Disciplina registro = new Disciplina();
+                registro.setNomeDisciplina(rs.getString("nomeDisciplina"));
+                registro.setCargaHoraria(rs.getString("cargaHoraria"));
+                registros.add(registro);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registros;
     }
 
     @Override
     public int insert(Disciplina objeto) {
-        // TODO Auto-generated method stub
-        return 0;
+        int registrosAfetados = 0;
+        String sql = "INSERT INTO disciplina (nomeDisciplina, cargaHoraria) VALUES (?, ?)";
+        try {
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, objeto.getNomeDisciplina());
+            ps.setString(2, objeto.getCargaHoraria());
+            registrosAfetados = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registrosAfetados;
     }
 
     @Override
     public int update(Disciplina objeto) {
-        // TODO Auto-generated method stub
-        return 0;
+        int registrosAfetados = 0;
+        String sql = "UPDATE disciplina SET cargaHoraria = ? WHERE nomeDisciplina = ?";
+        try {
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, objeto.getCargaHoraria());
+            ps.setString(2, objeto.getNomeDisciplina());
+            registrosAfetados = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registrosAfetados;
     }
-    
 }
