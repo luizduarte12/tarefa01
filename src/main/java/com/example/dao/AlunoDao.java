@@ -128,8 +128,19 @@ public class AlunoDao implements IDao<Aluno>{
 
     @Override
     public int update(Aluno objeto) {
-        // TODO Auto-generated method stub
-        return 0;
+        int registrosAfetados = 0;
+        String sql = "UPDATE aluno SET nome = ?, idade = ?, sexo =?, estaAtivo =?,  WHERE id = ?";
+        try {
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, objeto.getNome());
+            ps.setInt(2, objeto.getIdade());
+            ps.setString(3, String.valueOf(objeto.getSexo()));
+            ps.setBoolean(4, objeto.isEstaAtivo());
+            registrosAfetados = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return registrosAfetados;
     }
 
     
